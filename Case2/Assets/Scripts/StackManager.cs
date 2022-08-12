@@ -111,7 +111,7 @@ public class StackManager : MonoBehaviour
 
         if (m_LastXScale - Mathf.Abs(delta) > 0) {
             float mid = lastPlatformPosition.x + t.position.x / 2;
-            return mid;
+            return mid - (lastPlatformPosition.x / 2);
         }
         else
         {
