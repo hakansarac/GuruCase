@@ -27,10 +27,9 @@ public class ChibiController : MonoBehaviour
     /// </summary>
     private void Move()
     {
-        
         if (GameManager.Instance.state == GameManager.State.PLAY)
         {
-            transform.position = Vector3.Lerp(transform.position, new Vector3(stackManager.LastPlatformPosition.x, transform.position.y, transform.position.z) + transform.forward, m_Speed * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, new Vector3(stackManager.CrossMove(), transform.position.y, transform.position.z) + transform.forward, m_Speed * Time.deltaTime);
             if (transform.position.y < -2)
             {
                 GameManager.Instance.Failed();

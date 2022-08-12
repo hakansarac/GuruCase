@@ -80,7 +80,7 @@ public class CollactableManager : MonoBehaviour
         {
             if (i < 3)
             {
-                arrCoin[i].transform.position = new Vector3(0, 0.2f, (m_NewTarget + m_LastTarget) / 2 - (i * level));
+                arrCoin[i].transform.position = new Vector3(0, 0.2f, (m_NewTarget + m_LastTarget) / 2 - (i * level)-1);
             }
             else if (i < 6)
             {

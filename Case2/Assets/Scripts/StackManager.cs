@@ -12,6 +12,10 @@ public class StackManager : MonoBehaviour
     public float m_SpeedPlatform = 6f;
     //last platform scale of x
     private float m_LastXScale = 3f;
+    public float LastXScale
+    {
+        get { return m_LastXScale; }
+    }
     //new level target
     private float m_NewTarget;
     //last level target
@@ -20,6 +24,8 @@ public class StackManager : MonoBehaviour
     private float m_PositionZ;
     //star boost
     private int m_Boost;
+
+    private bool cross;
     //check wrong placement
     private bool m_FailFlag;
 
@@ -72,7 +78,7 @@ public class StackManager : MonoBehaviour
                 }
             }
             MoveNewPlatform();
-        }        
+        }
     }
 
     /// <summary>
@@ -91,6 +97,27 @@ public class StackManager : MonoBehaviour
         m_PositionZ += 3;
     }
 
+    public float NewSpawnPosition()
+    {
+        return m_Stack[m_StackIndex].transform.position.x;
+    }
+
+    public float CrossMove()
+    {
+        //t is transform of new spawned platform
+        Transform t = m_Stack[m_StackIndex].transform;
+        //distance between last platform x and new platform x
+        float delta = lastPlatformPosition.x - t.position.x;
+
+        if (m_LastXScale - Mathf.Abs(delta) > 0) {
+            float mid = lastPlatformPosition.x + t.position.x / 2;
+            return mid;
+        }
+        else
+        {
+            return lastPlatformPosition.x;
+        }
+    } 
     /// <summary>
     ///     Set position and scale new platform and place it
     /// </summary>
@@ -120,7 +147,8 @@ public class StackManager : MonoBehaviour
                         : t.position.x - (t.localScale.x / 2)
                         , t.transform.position.y - 0.2f
                         , t.position.z),
-                new Vector3(tempLastScale, 0.4f, 3)
+                new Vector3(tempLastScale, 0.4f, 3),
+                0
             );
                 return false;
             }            
@@ -142,7 +170,8 @@ public class StackManager : MonoBehaviour
                             : t.position.x - (t.localScale.x / 2)
                             , t.transform.position.y - 0.2f
                             , t.position.z),
-                    new Vector3(Mathf.Abs(delta), 0.4f, t.localScale.z)
+                    new Vector3(Mathf.Abs(delta), 0.4f, t.localScale.z),
+                    delta
                 );
             }
             
@@ -182,12 +211,24 @@ public class StackManager : MonoBehaviour
     /// </summary>
     /// <param name="_pos"> position of outgrowth</param>
     /// <param name="_scale"> scale of outgrowth</param>
-    private void CreateOutgrowth(Vector3 _pos, Vector3 _scale)
+    private void CreateOutgrowth(Vector3 _pos, Vector3 _scale,float _direction)
     {
         GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
         go.transform.localPosition = _pos;
         go.transform.localScale = _scale;
-        go.AddComponent<Rigidbody>();
+        if(_direction == 0)
+        {
+            go.AddComponent<Rigidbody>();
+        }
+        else if(_direction < 0)
+        {
+            go.AddComponent<Rigidbody>().angularVelocity = new Vector3(0, 0, -5);
+        }
+        else
+        {
+            go.AddComponent<Rigidbody>().angularVelocity = new Vector3(0, 0, 5);
+        }
+        
     }
 
     /// <summary>
